@@ -3,22 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeStream Mobile</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AnimeStream Premium Mobile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --bg-color: #0b0c10; 
+            --bg-gradient: linear-gradient(135deg, #0b0c10 0%, #1f2833 100%);
+            --text-color: #c5c6c7; 
+            --text-light: #ffffff;
+            --accent-color: #ff4757; 
+        }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-gradient); color: var(--text-color); margin: 0; min-height: 100vh; }
+        
+        /* Header & Profil */
+        header { background: rgba(11, 12, 16, 0.95); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .profile-mini { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color); cursor: pointer; }
+        
+        /* Profil Banner */
+        .profile-banner { background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; display: flex; align-items: center; gap: 20px; margin: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        .profile-banner img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--accent-color); cursor: pointer; object-fit: cover; }
+        
+        /* Search */
+        .search-bar { background: rgba(255,255,255,0.05); padding: 4px 15px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .search-bar input { background: transparent; border: none; color: white; outline: none; width: 120px; }
+        
+        #content { padding: 20px; max-width: 1100px; margin: 0 auto; }
+    </style>
 </head>
 <body>
 
     <header>
-        <h1 onclick="loadHome()">LENZ STREAMING ANIME GRATIS</h1>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Cari...">
-            <button onclick="handleSearch()">Cari</button>
+        <h1 style="cursor:pointer; font-size:20px; margin:0;" onclick="loadHome()">LENZ <span>ANIME</span></h1>
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Cari..." oninput="debouncedSearch()">
+            </div>
+            <img id="headerProfile" src="" class="profile-mini" onclick="changeProfile()">
         </div>
     </header>
 
     <main id="content"></main>
 
-    <script src="script.js"></script>
+    <script>
+        const FALLBACK_GIF = 'https://i.ibb.co.com/ZpzNn06K/ezgif-com-animated-gif-maker.gif';
+
+        // Fungsi Profil
+        function getProfile() { return localStorage.getItem('user_avatar') || FALLBACK_GIF; }
+        
+        function changeProfile() {
+            const newUrl = prompt("Masukkan URL GIF/Gambar untuk profil baru:", getProfile());
+            if (newUrl) {
+                localStorage.setItem('user_avatar', newUrl);
+                renderProfile();
+            }
+        }
+
+        function renderProfile() {
+            const src = getProfile();
+            document.getElementById('headerProfile').src = src;
+            const bannerImg = document.getElementById('bannerProfile');
+            if (bannerImg) bannerImg.src = src;
+        }
+
+        function loadHome() {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="profile-banner">
+                    <img id="bannerProfile" src="${getProfile()}" onclick="changeProfile()">
+                    <div>
+                        <h2 style="margin:0; color:white">Halo, Otaku!</h2>
+                        <p style="margin:0; font-size:13px;">Klik foto untuk ganti profil.</p>
+                    </div>
+                </div>
+                <div style="color:white; margin:20px;">Rekomendasi Utama akan muncul di sini...</div>
+            `;
+            renderProfile();
+        }
+
+        window.onload = () => {
+            renderProfile();
+            loadHome();
+        };
+
+        // Tambahkan logika debouncedSearch dan fungsi API Anda di bawah ini
+    </script>
 </body>
 </html>
-
